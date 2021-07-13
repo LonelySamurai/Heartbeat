@@ -1,0 +1,193 @@
+{% extends "profile_layout.html" %}
+<style>
+    .picbox
+    {
+        height: 3px;
+        width: 3px;
+        background-size: cover;
+        float:right;
+    }
+    .la
+    {
+        float: right;
+    }
+</style>
+{% block content2 %}
+<div class="container">
+   <div class="col-md-8">
+      <div class="card shadow">
+         <div class="card-body">
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="col-md-12" >
+                     <div class="picbox" style="float: right " id="lol" >
+                     </div>
+                     <span class="la offset-0" style="margin-left:20px;margin:10px;">
+                     <font size="6"><strong id="usn" >{{user.username}}</strong></font></span>
+                  </div>
+               </div>
+            </div>
+            <hr>
+            <div class="row">
+               <div class="col-md-12">
+                  <form method="POST" action="" enctype="multipart/form-data">
+                     {{ form.hidden_tag() }}
+                     <div class="form-group row">
+                        <label for="username" class="col-3 col-form-label">User Name</label>
+                        <div  id="username"  class="col-9">
+                           {{ form.username(class="form-control form-control-lg",placeholder=user.username,disabled=True) }}
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <label for="name" class="col-3 col-form-label">Name</label>
+                        <div class="col-9" id="name">
+                           {% if canEdit == 1 %}
+                           {{ form.name(class="form-control form-control-lg",placeholder=user.name) }}
+                           {%endif%}
+                           {% if canEdit == 0 %}
+                           {{ form.name(class="form-control form-control-lg",placeholder=user.name,disabled=True) }}
+                           {%endif%}
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <label for="email" class="col-3 col-form-label">Email</label>
+                        <div class="col-9" id="email">
+                           {{ form.email(class="form-control form-control-lg",placeholder=user.mail,disabled=True) }}
+                        </div>
+                     </div>
+                     <div class="form-group row" id="hide0">
+                        <label for="pass" class="col-3 col-form-label">Password</label>
+                        <div class="col-9" id="pass">
+                           {{ form.password(class="form-control form-control-lg") }}
+                        </div>
+                     </div>
+                     <div class="form-group row hide" id="hide1">
+                        <label for="newpass" class="col-3 col-form-label">New Password</label>
+                        <div class="col-9" id="newpass">
+                           {{ form.confirm(class="form-control form-control-lg") }}
+                        </div>
+                     </div>
+                     <div class="form-group row hide" id="hide3">
+                        <label for="newpass" class="col-3 col-form-label">Upload Pic</label>
+                        <div class="la col-9">
+                           <input type="file" name="userpic" class="la">
+                        </div>
+                        <br>
+                     </div>
+                     <div class="form-group row hide" id="hide2">
+                        <div class="offset-3 col-9 ">
+                           {{ form.submit(class="btn btn-dark") }}
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/5.10.0/firebase.js"></script>
+                <script>
+                  // Initialize Firebase
+                  var config = {
+                    apiKey: "AIzaSyCJl77rTQedXgNkJYQgy6KixcpBg1qL_qw",
+                    authDomain: "livelong-182518.firebaseapp.com",
+                    databaseURL: "https://livelong-182518.firebaseio.com",
+                    projectId: "livelong-182518",
+                    storageBucket: "livelong-182518.appspot.com",
+                    messagingSenderId: "1095267500390"
+                  };
+                  firebase.initializeApp(config);
+                </script>
+<script >
+   if ({{canEdit}} == 0 ){
+       var sub = document.getElementById("hide0");
+       sub.style.display = "none";
+
+       var sub = document.getElementById("hide1");
+       sub.style.display = "none";
+
+       var sub = document.getElementById("hide2");
+       sub.style.display = "none";
+
+       var sub = document.getElementById("hide3");
+       sub.style.display = "none";
+   }
+
+
+</script>
+ <script type="text/javascript">
+        function doesFileExist(urlToFile) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('HEAD', urlToFile, false);
+            xhr.send();
+            //alert(xhr.status);
+            if (xhr.status === 404) {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    </script>
+    <script>
+        class Image
+        {
+            constructor()
+            {
+
+            }
+            display()
+            {
+                throw new Error("Needs to implements in subclass");
+            }
+        }
+        class realImage extends Image
+        {
+            constructor(filename)
+            {
+                super();
+                this.real=filename;
+            }
+            display()
+            {
+                var x="/static/uploads/"+this.real;
+                x="\<img class=\"d-flex mr-3 rounded float-right\" src="+"\""+x+".jpeg\""+ " width=\"150\""+"\>";
+                document.getElementById("lol").innerHTML=x;
+            }
+        }
+        class proxyImage extends Image
+        {
+            constructor(proxyfilename)
+            {
+                super();
+                this.proxy=proxyfilename;
+                this.real=null;
+            }
+            setReal(real)
+            {
+                this.real=real;
+            }
+            display()
+            {
+                if(this.real==null)
+                {
+                    var x="/static/uploads/"+this.proxy;
+                    x="\<img class=\"d-flex mr-3 rounded float-right\" src="+"\""+x+".jpeg\""+ " width=\"150\""+"\>";
+                    document.getElementById("lol").innerHTML=x;
+                }
+                else this.real.display();
+            }
+        }
+        let aa=new proxyImage("coder_avatar");
+        var result = doesFileExist("/static/uploads/"+document.getElementById("usn").innerText+".jpeg");
+        //alert(result);
+        if(result===true){
+            let bb=new realImage(document.getElementById("usn").innerHTML);
+            aa.setReal(bb);
+        }
+
+        aa.display();
+    </script>
+{% endblock content2 %}

@@ -1,0 +1,79 @@
+{% block head %}
+    <title>{{user.username}}'s Profile</title>
+{% endblock head %}
+{% extends "index.html" %}
+{% block content %}
+<!------ Include the above in your HEAD tag ---------->
+
+<head>
+    <style>
+        .list-group.list-group-horizontal{
+	display: flex;
+	flex-direction: row;
+}
+
+.list-group.list-group-horizontal .list-group-item {
+	margin-bottom: 0;
+	margin-right: 0;
+ 	border-right-width: 0;
+}
+.list-group.list-group-horizontal .list-group-item:first-child {
+	border-top-right-radius:0;
+	border-bottom-left-radius:4px;
+}
+.list-group.list-group-horizontal .list-group-item:last-child {
+	border-top-right-radius:4px;
+	border-bottom-left-radius:0;
+	border-right-width: 1px;
+}
+    </style>
+</head>
+
+<div class="container">
+	<div class="row mt-5">
+        <div class="col-md-5" style="margin-top: 0px;">
+		     <div class="list-group list-group-horizontal" id="links">
+              <a href="/profile/{{user.username}}" class="list-group-item list-group-item-action" id="prof">Profile</a>
+                 <a href="/submission/{{user.username}}" class="list-group-item list-group-item-action" id="sub">Submission</a>
+              <a href="/posts/{{user.username}}" class="list-group-item list-group-item-action" id="post">Post</a>
+              <a href="/contests/{{user.username}}" class="list-group-item list-group-item-action" id="contest">Contest</a>
+              <a href="/issue/{{user.username}}" class="list-group-item list-group-item-action" id="issues">Issues</a>
+
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-10">
+            {% block content2 %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+<script>
+    var href = window.location.href ;
+    var res = href.split("/");
+    if(res[3] == "submission"){
+        var sub = document.getElementById("sub");
+        sub.className += " active";
+    }
+    else if(res[3] == "profile"){
+        var sub = document.getElementById("prof");
+        sub.className += " active";
+    }
+    else if(res[3] == "posts"){
+        var sub = document.getElementById("post");
+        sub.className += " active";
+    }
+    else if(res[3] == "contests"){
+        var sub = document.getElementById("contest");
+        sub.className += " active";
+    }
+    else if(res[3] == "issue"){
+        var sub = document.getElementById("issues");
+        sub.className += " active";
+    }
+</script>
+    <script>
+                highlight("user");
+            </script>
+{% endblock content %}

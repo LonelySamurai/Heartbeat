@@ -1,0 +1,172 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <div class="jumbotron text-center">
+        <h1>Welcome to HeartBeat</h1>
+
+
+        <!DOCTYPE html>
+        <html>
+            <head>
+
+
+                <title>Login</title>
+                <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel ="stylesheet">
+                <style>
+                    body {
+                        background: #fff;
+                        padding: 0px;
+                        margin: 0px;
+                        font-family: 'Nunito', sans-serif;
+                        font-size: 16px;
+                    }
+
+
+                    input, button {
+                        font-family: 'Nunito', sans-serif;
+                        font-weight: 700;
+
+                    }
+
+                    .main-div, .loggedin-div{
+                        width: 25%;
+                        margin: 0px auto;
+                        margin-top: 150px
+                        padding: 200px;
+                    }
+
+
+                    .main-div input{
+                        display: block;
+                        border: 1px solid #ccc;
+                        border-radius: 5pc;
+                        background: #fff;
+                        padding: 15px;
+                        outline: none;
+                        width: 100%;
+                        margin-bottom: 20px;
+
+                    }
+
+                    .main-div input:focus {
+                        border: 1px solid #777;
+
+
+                    }
+
+                    .main-div button, .loggedin-div button {
+                        background: #5d8ffc;
+                        color: #fff;
+                        border: 1px solid #5d8ffc;
+                        border-radius: 5px;
+                        padding: 15px;
+                        display: block;
+                        width: 100%;
+                        transition: 0.3s;
+                        -wenkit-transition: 0.3s;
+                        -moz-transition: 0.3s;
+
+                    }
+
+                    .main-div button:hover, .loggedin-div button:hover {
+                        background: #fff;
+                        color: #5d8ffc;
+                        border: 1px solid #5d8ffc;
+                        cursor: pointer;
+
+                    }
+
+                </style>
+
+            </head>
+
+            <body>
+
+                <div id="login_div" class="main-div">
+                    <h3>Please Sign-In</h3>
+                    <input type="email" placeholder="Email...." id="email_field" />
+                    <input type="password" placeholder="Password...." id="password_field"/>
+
+                    <button onclick="login()">Login to Account</button>
+
+                </div>
+
+                <div id ="user_div" class="loggedin-div">
+                    <h3>Welcome User</h3>
+                    <p id="user_para"> You are currently logged in.</p>
+                    <button onclick="logout()">Logout</button>
+
+                </div>
+
+
+                <script src="https://www.gstatic.com/firebasejs/5.10.0/firebase.js"></script>
+                <script>
+                  // Initialize Firebase
+                  var config = {
+                    apiKey: "AIzaSyCJl77rTQedXgNkJYQgy6KixcpBg1qL_qw",
+                    authDomain: "livelong-182518.firebaseapp.com",
+                    databaseURL: "https://livelong-182518.firebaseio.com",
+                    projectId: "livelong-182518",
+                    storageBucket: "livelong-182518.appspot.com",
+                    messagingSenderId: "1095267500390"
+                  };
+                  firebase.initializeApp(config);
+                </script>
+
+                 <script>
+
+                    firebase.auth().onAuthStateChanged(function(user) {
+                          if (user) {
+                                document.getElementById("user_div").style.display = "block";
+                                document.getElementById("login_div").style.display = "none";
+
+                                var user = firebase.auth().currentUser;
+
+                                if(user!=null){
+                                    var email_id = user.email;
+                                    document.getEkementById("user_para").innerHTML = "Welcome User: " + email
+
+                                }
+
+                          } else {
+                                document.getElementById("user_div").style.display = "none";
+                                document.getElementById("login_div").style.display = "block";
+                          }
+                       });
+
+
+                 </script>
+                 <script>
+
+                    function login(){
+
+                        var userEmail = document.getElementById("email_field").value;
+                        var userPass = document.getElementById("password_field").value;
+
+                        firebase.auth().signInWithEmailAndPassword(userEmail, userPass).catch(function(error) {
+
+                            var errorCode = error.code;
+                            var errorMessage = error.message;
+
+                            window.alert("Error: " + errorMessage);
+
+                        });
+
+
+                    }
+
+                    function logout(){
+
+                        firebase.auth().signOut()
+
+                    }
+
+                </script>
+
+
+
+            </body>
+        </html>
+
+    </div>
+{% endblock %}
